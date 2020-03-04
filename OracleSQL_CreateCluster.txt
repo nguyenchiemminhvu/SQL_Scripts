@@ -1,0 +1,14 @@
+create table INTERNS
+(
+    id NUMBER(6, 0),
+    name VARCHAR2(25),
+    department_id NUMBER(4,0)
+)
+CLUSTER EMP_DEPARTMENTS_CLUSTER (department_id);
+
+create table INTERN_DEPARTMENTS
+(
+    department_id NUMBER(4,0),
+    department_name VARCHAR2(30)
+)
+CLUSTER EMP_DEPARTMENTS_CLUSTER (department_id);
