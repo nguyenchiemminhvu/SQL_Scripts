@@ -1,0 +1,18 @@
+declare
+   l_id       NUMBER;  
+   l_salary   NUMBER (9, 2);  
+   l_name     VARCHAR2 (100);  
+  
+   CURSOR emp_cur  
+   IS  
+      SELECT employee_id,  
+             salary,  
+             last_name || ',' || first_name  
+      FROM hr.employees
+      ORDER by salary desc;
+BEGIN  
+  OPEN emp_cur;  
+  FETCH emp_cur INTO l_id, l_salary, l_name;  
+  DBMS_OUTPUT.put_line (l_id || '-' || l_name || '-' || l_salary);    
+  CLOSE emp_cur;  
+end;
