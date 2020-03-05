@@ -1,0 +1,17 @@
+create DIRECTORY externaldb as 'D:\app\oracleuser1\oradata\externaldb';
+grant read,write on DIRECTORY externaldb to HR;
+create table LANGUAGES
+(
+  LID NUMBER(3,0),
+  LNAME VARCHAR2(30)
+)
+ORGANIZATION EXTERNAL
+(
+  TYPE oracle_loader
+  default DIRECTORY externaldb
+  access parameters (fields terminated by ',')
+  location ('languages.csv')
+);
+
+select *
+from LANGUAGES;

@@ -1,0 +1,13 @@
+create or replace trigger TEST_TRIGGER
+after UPDATE OR DELETE OR INSERT ON BONUS
+DECLARE
+  type_transaction VARCHAR2(30);
+begin
+  type_transaction := case
+                        when UPDATING then 'update'
+                        when INSERTING then 'insert'
+                        when DELETING then 'delete'
+                      end;
+  
+  SYS.DBMS_OUTPUT.PUT_LINE(type_transaction || ' on table BONUS at ' || TO_CHAR(CURRENT_TIMESTAMP));
+end;
