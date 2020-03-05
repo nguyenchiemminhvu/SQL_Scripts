@@ -1,0 +1,4 @@
+select deptno, LISTAGG(ename, ',') 
+WITHIN GROUP (ORDER BY ename)
+from EMP
+group by deptno;

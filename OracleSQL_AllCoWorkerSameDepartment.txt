@@ -1,0 +1,5 @@
+select distinct e1.ename, listagg(e2.ename, ',') WITHIN GROUP (ORDER BY e2.ename) as COWORKER
+from emp e1, emp e2
+where e1.deptno = e2.deptno and e1.ename != e2.ename
+group by e1.ename, e1.deptno
+order by e1.ename;
