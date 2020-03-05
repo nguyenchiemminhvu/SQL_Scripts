@@ -1,0 +1,8 @@
+merge into BONUS B
+USING EMP S
+ON (B.empno = S.empno)
+when not matched then
+  insert (B.EMPNO, B.MONEY)
+  values (S.EMPNO, 100)
+when matched then
+  update set B.MONEY = 1000;
