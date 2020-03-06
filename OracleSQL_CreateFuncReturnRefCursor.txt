@@ -1,0 +1,14 @@
+create or replace function getHighSalary
+(
+  lowest in EMPLOYEES.salary%TYPE,
+  highest in EMPLOYEES.salary%TYPE
+) return sys_refcursor
+as high_salary_report sys_refcursor;
+begin
+  open high_salary_report for
+  select *
+  from EMPLOYEES
+  where salary between lowest and highest;
+  
+  return high_salary_report;
+end;

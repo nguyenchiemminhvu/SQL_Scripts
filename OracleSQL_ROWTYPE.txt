@@ -1,0 +1,16 @@
+declare
+
+  emprow EMPLOYEES%ROWTYPE;
+  totalSalary NUMBER(10, 0) := 0;
+  Cursor emprecords is select * from Employees;
+  
+begin
+
+  for emprow in emprecords
+  loop
+    totalSalary := totalSalary + emprow.salary;
+  end loop;
+  
+  SYS.Dbms_Output.Put_Line(totalSalary);
+  
+end;

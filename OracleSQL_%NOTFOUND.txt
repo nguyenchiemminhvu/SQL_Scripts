@@ -1,0 +1,15 @@
+declare
+  emprow EMPLOYEES%ROWTYPE;
+  cursor testemp is select * from EMPLOYEES;
+begin
+  open testemp;
+  
+  loop
+    fetch testemp into emprow;
+    exit when testemp%NOTFOUND;
+    
+    dbms_output.put_line(emprow.salary);
+  end loop;
+  
+  close testemp;
+end;

@@ -1,0 +1,29 @@
+create or replace function getHighSalary
+(
+  lowest in EMPLOYEES.salary%TYPE,
+  highest in EMPLOYEES.salary%TYPE
+) return sys_refcursor
+as high_salary_report sys_refcursor;
+begin
+  open high_salary_report for
+  select *
+  from EMPLOYEES
+  where salary between lowest and highest;
+  
+  return high_salary_report;
+end;
+
+===================================================
+
+declare
+  salary_report sys_refcursor;
+  emprow EMPLOYEES%ROWTYPE;
+begin
+  salary_report := GetHighSalary(10000, 20000);
+  loop
+    fetch salary_report into emprow;
+    exit when salary_report%NOTFOUND;
+    dbms_output.put_line(emprow.salary);
+  end loop;
+  close salary_report;
+end;

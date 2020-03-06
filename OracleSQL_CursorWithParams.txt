@@ -1,0 +1,34 @@
+declare
+  emprow EMPLOYEES%ROWTYPE;
+  cursor highsalary(low_salary NUMBER, high_salary NUMBER)
+    is 
+      select * 
+      from EMPLOYEES
+      where salary Between low_salary and high_salary;
+begin
+  open highsalary(10000, 20000);
+  
+  loop
+    fetch highsalary into emprow;
+    exit when highsalary%NOTFOUND;
+    dbms_output.put_line(emprow.salary);
+  end loop;
+  
+  close highsalary;
+end;
+
+===========================================
+
+declare
+--  emprow EMPLOYEES%ROWTYPE;
+  cursor highsalary(low_salary NUMBER, high_salary NUMBER)
+    is 
+      select * 
+      from EMPLOYEES
+      where salary Between low_salary and high_salary;
+begin
+  for emprow in highsalary(10000, 20000)
+  loop
+    dbms_output.put_line(emprow.employee_id || ' ' || emprow.salary);
+  end loop;
+end;
