@@ -1,0 +1,29 @@
+declare
+  subcursor sys_refcursor;
+  cursor maincursor
+    is
+      select D.Department_Name, 
+             cursor
+             (
+                select * 
+                from Employees E 
+                where E.Department_Id = D.Department_Id 
+                order by E.Last_Name
+             )
+      from Departments D;
+  dep_name Departments.Department_Name%TYPE;
+  emp_name Employees%ROWTYPE;
+begin
+  open maincursor;
+  loop
+    Fetch maincursor into dep_name, subcursor;
+    exit when maincursor%NOTFOUND;
+    dbms_output.put_line('Department: ' || dep_name);
+    loop
+      fetch subcursor into emp_name;
+      exit when subcursor%NOTFOUND;
+      dbms_output.put_line('  ' || emp_name.last_name);
+    end loop;
+  end loop;
+  close maincursor;
+end;

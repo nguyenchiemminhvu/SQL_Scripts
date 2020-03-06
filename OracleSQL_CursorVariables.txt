@@ -1,0 +1,51 @@
+declare
+  cursorvar sys_refcursor;
+  
+  emprow EMPLOYEES%ROWTYPE;
+  emprow_sal EMPLOYEES.Salary%TYPE;
+begin
+  open cursorvar for
+    select *
+    from Employees;
+  
+  loop
+    fetch cursorvar into emprow;
+    exit when cursorvar%NOTFOUND;
+    dbms_output.put_line(emprow.last_name);
+  end loop;
+  
+  open cursorvar for
+    select salary
+    from EMPLOYEES
+    where salary between 10000 and 20000;
+  
+  loop
+    fetch cursorvar into emprow_sal;
+    exit when cursorvar%NOTFOUND;
+    dbms_output.put_line(emprow_sal);
+  end loop;
+  
+  close cursorvar;
+  
+end;
+
+========================================================
+
+declare
+  cursorvar sys_refcursor;
+  type emprow_t is table of EMPLOYEES.last_name%TYPE;
+  type emprow_sal_t is table of EMPLOYEES.Salary%TYPE;
+  emprow emprow_t;
+  emprow_sal emprow_sal_t;
+begin
+  open cursorvar for
+    select last_name, salary
+    from Employees;
+  fetch cursorvar bulk Collect into emprow, emprow_sal;
+  close cursorvar;
+  
+  for idx in emprow.first .. emprow.last
+  loop
+    dbms_output.put_line(emprow(idx) || ' ' || emprow_sal(idx));
+  end loop;
+end;

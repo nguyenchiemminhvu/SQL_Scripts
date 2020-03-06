@@ -1,0 +1,33 @@
+declare
+  type EMP_TABLE is TABLE of EMPLOYEES%ROWTYPE;
+  emptable EMP_TABLE;
+begin
+  select * Bulk Collect Into emptable
+  from Employees;
+  
+  for idx in 1 .. emptable.count
+  loop
+    dbms_output.put_line(emptable(idx).last_name);
+  end loop;
+end;
+
+=====================================================
+
+declare
+  type EMP_TABLE is TABLE of EMPLOYEES%ROWTYPE;
+  emptable EMP_TABLE;
+  
+  Cursor empcursor
+    is
+      select *
+      from EMPLOYEES;
+begin
+  open empcursor;
+  fetch empcursor Bulk Collect Into emptable;
+  close empcursor;
+  
+  for idx in 1 .. emptable.count
+  loop
+    dbms_output.put_line(emptable(idx).last_name);
+  end loop;
+end;
