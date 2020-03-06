@@ -1,0 +1,60 @@
+DROP TABLE secret_records;
+CREATE TABLE secret_records (
+  user_name    VARCHAR2(9),
+  service_type VARCHAR2(12),
+  value        VARCHAR2(30),
+  date_created DATE
+);
+
+INSERT INTO secret_records (
+  user_name, service_type, value, date_created
+)
+VALUES ('Andy', 'Waiter', 'Serve dinner at Cafe Pete', SYSDATE);
+ 
+INSERT INTO secret_records (
+  user_name, service_type, value, date_created
+)
+VALUES ('Chuck', 'Merger', 'Buy company XYZ', SYSDATE);
+
+============================================
+
+CREATE OR REPLACE PROCEDURE get_record (
+  user_name    IN  VARCHAR2,
+  service_type IN  VARCHAR2,
+  rec          OUT VARCHAR2
+) AUTHID DEFINER
+IS
+  query VARCHAR2(4000);
+BEGIN
+  -- Following SELECT statement is vulnerable to modification
+  -- because it uses concatenation to build WHERE clause.
+  query := 'SELECT value FROM secret_records WHERE user_name='''
+           || user_name 
+           || ''' AND service_type=''' 
+           || service_type 
+           || '''';
+  DBMS_OUTPUT.PUT_LINE('Query: ' || query);
+  EXECUTE IMMEDIATE query INTO rec ;
+  DBMS_OUTPUT.PUT_LINE('Rec: ' || rec );
+END;
+
+================================================
+
+SET SERVEROUTPUT ON;
+
+DECLARE
+  record_value VARCHAR2(4000);
+BEGIN
+  get_record('Andy', 'Waiter', record_value);
+END;
+
+=============================================
+
+DECLARE
+  record_value VARCHAR2(4000);
+BEGIN
+  get_record(
+  'Anybody '' OR service_type=''Merger''--',
+  'Anything',
+  record_value);
+END;
