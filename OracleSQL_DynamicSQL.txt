@@ -1,0 +1,86 @@
+create or replace PACKAGE HR_PACKAGE_1
+AS
+  
+  cursor c_employees
+    is
+      select *
+      from employees;
+    
+  function getHighestSalary
+  return NUMBER;
+  
+  procedure drop_table
+  (
+    table_name varchar2
+  );
+  
+  procedure send_bonus
+  (
+    for_each_one NUMBER,
+    dept_id NUMBER
+  );
+
+END HR_PACKAGE_1;
+
+=============================================================
+
+create or replace PACKAGE body HR_PACKAGE_1
+AS
+
+  function getHighestSalary
+  return NUMBER
+  as
+    n_highest NUMBER;
+  begin
+    select max(salary) into n_highest
+    from employees;
+    return n_highest;
+  end getHighestSalary;
+  
+  procedure drop_table
+  (
+    table_name varchar2
+  )
+  as
+  begin
+    Execute Immediate 'drop table ' || table_name;
+    Exception
+      when others then
+        if sqlcode != -942 then
+          raise;
+        end if;
+  end drop_table;
+  
+  procedure send_bonus
+  (
+    for_each_one NUMBER,
+    dept_id NUMBER
+  )
+  as
+  begin
+    merge into BONUS x
+    using 
+      (
+        select employee_id, (select for_each_one from DUAL) as money
+        from employees
+        where department_id = dept_id
+      ) y
+    on (x.employee_id = y.employee_id)
+    when matched then
+      update set x.money = x.money + for_each_one
+    when not matched then
+      insert (x.employee_id, x.money)
+      values (y.employee_id, y.money);
+  end send_bonus;
+
+END HR_PACKAGE_1;
+
+===================================================================
+
+declare
+  Send_Bonus_Query varchar2(512);
+begin
+  Send_Bonus_Query := 'begin HR_PACKAGE_1.send_bonus(:amount, :dept_id); end;';
+  Execute Immediate Send_Bonus_Query
+  Using 100, 60;
+end;
