@@ -1,0 +1,38 @@
+create or replace PACKAGE HR_PACKAGE_1
+AS
+
+  cursor c_employees
+    is
+      select *
+      from employees;
+    
+  function getHighestSalary
+  return NUMBER;
+
+END HR_PACKAGE_1;
+
+=========================================================
+
+create or replace PACKAGE body HR_PACKAGE_1
+AS
+
+  function getHighestSalary
+  return NUMBER
+  as
+    n_highest NUMBER;
+  begin
+    select max(salary) into n_highest
+    from employees;
+    return n_highest;
+  end getHighestSalary;
+
+END HR_PACKAGE_1;
+
+=======================================================
+
+declare
+  n_highest NUMBER := 0;
+begin
+  n_highest := Hr_Package_1.Gethighestsalary();
+  dbms_output.put_line(n_highest);
+end;
