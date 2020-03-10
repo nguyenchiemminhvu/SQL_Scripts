@@ -1,0 +1,10 @@
+select department_id, employee_id, salary
+from employees
+Model
+    Partition By (department_id)
+    Dimension By (employee_id)
+    Measures (salary)
+    Rules
+    (
+      salary[for employee_id from 100 to 110 Increment 1] = salary[CV()] + 500
+    );

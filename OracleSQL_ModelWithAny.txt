@@ -1,0 +1,10 @@
+select department_id, employee_id, salary
+from employees
+Model
+    Partition By (department_id)
+    Dimension By (employee_id)
+    Measures (salary)
+    Rules
+    (
+      salary[any] = salary[CV()] + 999
+    );
