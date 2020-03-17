@@ -36,3 +36,141 @@ begin
   n_highest := Hr_Package_1.Gethighestsalary();
   dbms_output.put_line(n_highest);
 end;
+
+=========================================================
+
+create or replace PACKAGE HR_PACKAGE_1
+AS
+  
+  cursor c_employees
+    is
+      select *
+      from employees;
+    
+  function getHighestSalary
+  return NUMBER;
+  
+  procedure drop_table
+  (
+    table_name varchar2
+  );
+  
+  procedure send_bonus_dept
+  (
+    for_each_one NUMBER,
+    dept_id NUMBER
+  );
+  
+  procedure send_bonus_emp
+  (
+    for_each_one NUMBER,
+    emp_id NUMBER
+  );
+  
+  TYPE EMP_ID_ARRAY_T is table of NUMBER index by BINARY_INTEGER;
+  procedure send_bonus_emps
+  (
+    for_each_one IN NUMBER,
+    emp_ids IN EMP_ID_ARRAY_T
+  );
+
+END HR_PACKAGE_1;
+
+==================================================================
+
+create or replace PACKAGE body HR_PACKAGE_1
+AS
+
+  function getHighestSalary
+  return NUMBER
+  as
+    n_highest NUMBER;
+  begin
+    select max(salary) into n_highest
+    from employees;
+    return n_highest;
+  end getHighestSalary;
+  
+  procedure drop_table
+  (
+    table_name varchar2
+  )
+  as
+  begin
+    Execute Immediate 'drop table ' || table_name;
+    Exception
+      when others then
+        if sqlcode != -942 then
+          raise;
+        end if;
+  end drop_table;
+  
+  procedure send_bonus_dept
+  (
+    for_each_one NUMBER,
+    dept_id NUMBER
+  )
+  as
+  begin
+    merge into BONUS x
+    using 
+      (
+        select employee_id, (select for_each_one from DUAL) as money
+        from employees
+        where department_id = dept_id
+      ) y
+    on (x.employee_id = y.employee_id)
+    when matched then
+      update set x.money = x.money + for_each_one
+    when not matched then
+      insert (x.employee_id, x.money)
+      values (y.employee_id, y.money);
+  end send_bonus_dept;
+  
+  procedure send_bonus_emp
+  (
+    for_each_one NUMBER,
+    emp_id NUMBER
+  )
+  as
+  begin
+    merge into BONUS b
+    using (
+              select employee_id, (select for_each_one from DUAL) as money
+              from employees
+              where employee_id = emp_id
+          ) e
+    on (b.employee_id = e.employee_id)
+    when matched then
+      update set b.money = b.money + e.money
+    when not matched then
+      insert (b.employee_id, b.money)
+      values (e.employee_id, e.money);
+  end send_bonus_emp;
+  
+  procedure send_bonus_emps
+  (
+    for_each_one IN NUMBER,
+    emp_ids IN EMP_ID_ARRAY_T
+  )
+  as
+  begin
+    for i in 1..emp_ids.count
+    loop
+      Send_Bonus_Emp(for_each_one, emp_ids(i));
+    end loop;
+  end send_bonus_emps;
+
+END HR_PACKAGE_1;
+
+========================================================
+
+declare
+  emp_ids HR_Package_1.EMP_ID_ARRAY_T;
+begin
+  select employee_id bulk collect into emp_ids
+  from employees
+  where employee_id in (100, 101, 102, 105);
+  
+  Hr_Package_1.Send_Bonus_Emps(10, emp_ids);
+end;
