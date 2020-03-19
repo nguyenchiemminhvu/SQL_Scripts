@@ -1,0 +1,12 @@
+declare
+  emp_id NUMBER;
+  new_money NUMBER;
+begin
+  update BONUS
+  set Money = 10000
+  where Employee_Id = 100
+  Returning Employee_id, Money
+  into emp_id, new_money;
+  
+  dbms_output.put_line(emp_id || ' ' || New_Money);
+end;
