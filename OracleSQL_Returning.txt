@@ -10,3 +10,20 @@ begin
   
   dbms_output.put_line(emp_id || ' ' || New_Money);
 end;
+
+========================================
+
+declare
+  type emp_rows_t is table of BONUS%ROWTYPE;
+  emp_rows emp_rows_t;
+begin
+  update BONUS
+  set Money = 1000
+  Returning Employee_Id, Money
+  Bulk Collect into emp_rows;
+  
+  for i in 1..emp_rows.count
+  loop
+    dbms_output.put_line(emp_rows(i).employee_id || ' ' || emp_rows(i).money);
+  end loop;
+end;
