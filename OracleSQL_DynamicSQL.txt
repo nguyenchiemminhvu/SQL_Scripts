@@ -84,3 +84,12 @@ begin
   Execute Immediate Send_Bonus_Query
   Using 100, 60;
 end;
+
+====================================================================
+
+declare
+  bonus_rows BONUS%ROWTYPE;
+begin
+  Execute Immediate 'select * from BONUS fetch next 1 rows only' into bonus_rows;
+  dbms_output.put_line(Bonus_Rows.employee_id || ' ' || bonus_rows.money);
+end;
