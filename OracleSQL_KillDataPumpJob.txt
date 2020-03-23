@@ -1,0 +1,10 @@
+select * from dba_datapump_jobs;
+
+------------------------------------
+
+declare
+  pump_job_id NUMBER;
+begin
+  pump_job_id := Dbms_Datapump.Attach('job_name', 'job_owner');
+  Dbms_Datapump.Stop_Job(pump_job_id);
+end;
