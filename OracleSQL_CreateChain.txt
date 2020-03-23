@@ -58,3 +58,10 @@ end;
 
 =====================================================
 
+begin
+  SYS.Dbms_Scheduler.Run_Chain
+  (
+    chain_name => 'chain_1', 
+    start_steps => 'step_1'
+  );
+end;
