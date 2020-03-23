@@ -1,0 +1,2 @@
+select employee_id, floor(months_between(SYSDATE, hire_date) / 12)
+from employees;

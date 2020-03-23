@@ -1,20 +1,47 @@
 BEGIN
-    DBMS_SCHEDULER.CREATE_JOB (
-            job_name => '"HR"."JOB_1"',
-            job_type => 'PLSQL_BLOCK',
-            job_action => 'begin null; end;',
-            number_of_arguments => 0,
-            start_date => NULL,
-            repeat_interval => 'FREQ=SECONDLY;INTERVAL=3;BYDAY=MON,TUE,WED,THU,FRI,SAT,SUN',
-            end_date => NULL,
-            enabled => FALSE,
-            auto_drop => FALSE,
-            comments => '');
+    	DBMS_SCHEDULER.CREATE_JOB
+	(
+		job_name => '"HR"."JOB_1"',
+            	job_type => 'PLSQL_BLOCK',
+            	job_action => 'begin null; end;',
+            	number_of_arguments => 0,
+            	start_date => NULL,
+            	repeat_interval => 'FREQ=SECONDLY;INTERVAL=3;BYDAY=MON,TUE,WED,THU,FRI,SAT,SUN',
+            	end_date => NULL,
+            	enabled => FALSE,
+            	auto_drop => FALSE,
+            	comments => ''
+	);
 
-    DBMS_SCHEDULER.SET_ATTRIBUTE( 
-             name => '"HR"."JOB_1"', 
-             attribute => 'logging_level', value => DBMS_SCHEDULER.LOGGING_OFF);
-  
-    DBMS_SCHEDULER.enable(
-             name => '"HR"."JOB_1"');
+    	DBMS_SCHEDULER.SET_ATTRIBUTE
+	(
+             	name => '"HR"."JOB_1"', 
+             	attribute => 'logging_level', 
+		value => DBMS_SCHEDULER.LOGGING_OFF
+	);
+ 
+    	DBMS_SCHEDULER.enable
+	(
+             name => '"HR"."JOB_1"'
+	);
 END;
+
+=======================================================================
+
+begin
+  SYS.Dbms_Scheduler.Create_Job
+  (
+    job_name            => '"HR"."MKDIR_JOB"',
+    job_type            => 'EXECUTABLE',
+    job_action          => '\windows\system32\cmd.exe',
+    number_of_arguments => 3,
+    auto_drop           => FALSE,
+    credential_name     => 'SAMPLEDB_HR'
+  );
+  
+  SYS.Dbms_Scheduler.Set_Job_Argument_Value('"HR"."MKDIR_JOB"', 1, '/c');
+  SYS.Dbms_Scheduler.Set_Job_Argument_Value('"HR"."MKDIR_JOB"', 2, 'mkdir');
+  SYS.Dbms_Scheduler.Set_Job_Argument_Value('"HR"."MKDIR_JOB"', 3, 'C:\Users\Admin\Desktop\NCMV_FOLDER');
+  
+  SYS.Dbms_Scheduler.Enable('"HR"."MKDIR_JOB"');
+end;

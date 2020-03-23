@@ -1,0 +1,60 @@
+begin
+  SYS.Dbms_Scheduler.Create_Chain
+  (
+    chain_name => 'chain_1'
+  );
+  
+  SYS.Dbms_Scheduler.Enable
+  (
+    name => 'chain_1'
+  );
+  
+  SYS.Dbms_Scheduler.Define_Chain_Step
+  (
+    chain_name => 'chain_1',
+    step_name => 'step_1',
+    program_name  => 'program_1'
+  );
+  
+  SYS.Dbms_Scheduler.Define_Chain_Step
+  (
+    chain_name => 'chain_1',
+    step_name => 'step_2',
+    program_name  => 'program_2'
+  );
+  
+  SYS.Dbms_Scheduler.Define_Chain_Step
+  (
+    chain_name => 'chain_1',
+    step_name => 'step_3',
+    program_name  => 'program_3'
+  );
+
+SYS.Dbms_Scheduler.Define_Chain_Rule
+  (
+    chain_name => 'chain_1',
+    condition => 'TRUE',
+    action => 'START step_1',
+    rule_name => 'rule_1',
+    comments => ''
+  );
+  
+  SYS.Dbms_Scheduler.Define_Chain_Rule
+  (
+    chain_name => 'chain_1',
+    condition => 'step_1 completed',
+    action => 'START step_2',
+    rule_name => 'rule_2'
+  );
+  
+  SYS.Dbms_Scheduler.Define_Chain_Rule
+  (
+    chain_name => 'chain_1',
+    condition => 'step_2 completed',
+    action => 'START step_3',
+    rule_name => 'rule_3'
+  );
+end;
+
+=====================================================
+
