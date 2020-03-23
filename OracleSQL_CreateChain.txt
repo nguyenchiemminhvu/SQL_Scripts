@@ -65,3 +65,32 @@ begin
     start_steps => 'step_1'
   );
 end;
+
+=========================================================
+
+BEGIN
+    DBMS_SCHEDULER.CREATE_JOB 
+    (
+            job_name => '"HR"."RUN_CHAIN_1"',
+            job_type => 'CHAIN',
+            job_action => '"HR"."CHAIN_1"',
+            number_of_arguments => 0,
+            start_date => NULL,
+            repeat_interval => 'FREQ=SECONDLY;BYDAY=MON,TUE,WED,THU,FRI',
+            end_date => NULL,
+            enabled => FALSE,
+            auto_drop => FALSE,
+            comments => 'run chain 1'
+    );
+
+    DBMS_SCHEDULER.SET_ATTRIBUTE
+    ( 
+             name => '"HR"."RUN_CHAIN_1"', 
+             attribute => 'logging_level', value => DBMS_SCHEDULER.LOGGING_OFF
+    );
+  
+    DBMS_SCHEDULER.enable
+    (
+             name => '"HR"."RUN_CHAIN_1"'
+    );
+END;
