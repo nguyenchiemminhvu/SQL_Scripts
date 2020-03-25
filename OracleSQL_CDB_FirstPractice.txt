@@ -54,3 +54,10 @@ File_Name_Convert=('D:\ORACLEHOME\ORADATA\LOCALDB\PDBSEED\',
                        'D:\ORACLEHOME\ORADATA\LOCALDB\PDB_HR\')
 Storage (Maxsize 10g Max_Shared_Temp_Size 10g)
 Path_Prefix='D:\ORACLEHOME\ORADATA\LOCALDB\PDBSEED\PDB_HR\';
+
+////////////////////////////////////////////////////////////////////
+
+Alter Pluggable Database hr Open Read Write Restricted;
+
+////////////////////////////////////////////////////////////////////
+
