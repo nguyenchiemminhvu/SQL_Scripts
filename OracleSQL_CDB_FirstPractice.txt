@@ -1,0 +1,56 @@
+select instance_name, version, status from v$instance;
+
+/////////////////////////////////////////////////////////////
+
+select name, cdb from v$database;
+
+/////////////////////////////////////////////////////////////
+
+select 
+  dba_pdbs.con_id, dba_pdbs.pdb_name, dba_pdbs.status, v$pdbs.open_mode
+from
+  dba_pdbs, v$pdbs
+where
+  dba_pdbs.con_id = v$pdbs.con_id
+order by
+  con_id;
+
+////////////////////////////////////////////////////////////////
+
+alter System set db_create_file_dest = 'D:\OracleHome\oradata\localdb';
+
+/////////////////////////////////////////////////////////////////
+
+create Pluggable Database hr
+Admin user hr_admin identified by hr_admin
+create_file_dest = 'D:/OracleHome/oradata/';
+
+//////////////////////////////////////////////////////////////////
+
+create Pluggable Database sales
+admin user sales_admin Identified by sales_admin
+Default Tablespace pdb_sales_ts
+Storage (Maxsize 100g max_shared_temp_size 100g);
+
+//////////////////////////////////////////////////////////////////
+
+drop pluggable database hr including datafiles;
+drop pluggable database sales including datafiles;
+
+///////////////////////////////////////////////////////////////////
+
+select name 
+from v$datafile
+where con_id = 2;
+
+///////////////////////////////////////////////////////////////////
+
+Create Pluggable Database hr
+Admin User hr_admin Identified By hr_admin
+Default Tablespace pdb_hr_ts
+Datafile 'D:/OracleHome/oradata/localdb/pdb_hr/DATAFILE/pdb_hr_ts_001.DAT'
+Size 1g
+File_Name_Convert=('D:\ORACLEHOME\ORADATA\LOCALDB\PDBSEED\',
+                       'D:\ORACLEHOME\ORADATA\LOCALDB\PDB_HR\')
+Storage (Maxsize 10g Max_Shared_Temp_Size 10g)
+Path_Prefix='D:\ORACLEHOME\ORADATA\LOCALDB\PDBSEED\PDB_HR\';
